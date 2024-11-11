@@ -28,6 +28,8 @@ u_p = np.zeros(len(v_ref))
 u_i = np.zeros(len(v_ref))
 u_d = np.zeros(len(v_ref))
 u_pid = np.zeros(len(v_ref))
+theta_acc = np.zeros(len(v_ref))
+theta_brake = np.zeros(len(v_ref))
 
 for i in range(len(v_ref)-1):
     # compute controller input
@@ -56,36 +58,46 @@ for i in range(len(v_ref)-1):
 
     a = F_acc / params["m"]
 
+    if a >= 0:
+        theta_acc[i+1] = a
+    elif a < 0:
+        theta_brake[i+1] = -1 * a
+
     v[i+1] = v[i] + a * dt_s
     
     # compute error
     error[i+1] = v_ref[i+1] - v[i+1]
 
 # plot data
-ax1 = plt.subplot(311)
+fig, axes = plt.subplots(2, 2)
 plt.tight_layout()
-plt.plot(v_ref, label='v_ref')
-plt.plot(v, label='v')
-ax1.set_ylabel("speed (m/s)")
-ax1.set_xlabel("time (s)")
-plt.legend()
+axes[0,0].plot(v_ref, label='v_ref')
+axes[0,0].plot(v, label='v')
+axes[0,0].set_ylabel("speed (m/s)")
+axes[0,0].set_xlabel("time (s)")
+axes[0,0].legend()
 
-ax2 = plt.subplot(312)
 plt.tight_layout()
-plt.plot(u_p, label='u_p')
-plt.plot(u_i, label='u_i')
-plt.plot(u_d, label='u_d')
-plt.plot(u_pid, label='u_pid')
+axes[1,0].plot(u_p, label='u_p')
+axes[1,0].plot(u_i, label='u_i')
+axes[1,0].plot(u_d, label='u_d')
+axes[1,0].plot(u_pid, label='u_pid')
 
-ax2.set_ylabel("input")
-ax2.set_xlabel("time (s)")
-plt.legend()
+axes[1,0].set_ylabel("input")
+axes[1,0].set_xlabel("time (s)")
+axes[1,0].legend()
 
-ax3 = plt.subplot(313)
 plt.tight_layout()
-plt.plot(F_trac, label='F_trac')
-ax3.set_ylabel("Force (N)")
-ax3.set_xlabel("time (s)")
+axes[0,1].plot(F_trac, label='F_trac')
+axes[0,1].set_ylabel("Force (N)")
+axes[0,1].set_xlabel("time (s)")
+axes[0,1].legend()
 
-plt.legend()
+ax4 = plt.subplot(222)
+plt.tight_layout()
+axes[1,1].plot(theta_acc, label='theta_acc')
+axes[1,1].plot(theta_brake, label='theta_brake')
+axes[1,1].set_ylabel("Pedal angles")
+axes[1,1].set_xlabel("times (s)")
+axes[1,1].legend()
 plt.show()
