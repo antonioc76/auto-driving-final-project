@@ -12,7 +12,7 @@ params = {
     }
 
 # define reference trajectory
-v_ref = np.ones(2*60) * 5
+v_ref = np.ones(2*60) * 2.2352
 
 # initialize variables
 F_trac = np.zeros(len(v_ref))
@@ -20,8 +20,8 @@ error = np.zeros(len(v_ref))
 v = np.zeros(len(v_ref))
 dt_s = 1
 
-kp = 0.01
-ki = 0.1
+kp = 0.005
+ki = 0.005
 kd = 0
 
 u_p = np.zeros(len(v_ref))
@@ -98,6 +98,6 @@ plt.tight_layout()
 axes[1,1].plot(theta_acc, label='theta_acc')
 axes[1,1].plot(theta_brake, label='theta_brake')
 axes[1,1].set_ylabel("Pedal angles")
-axes[1,1].set_xlabel("times (s)")
+axes[1,1].set_xlabel("time (s)")
 axes[1,1].legend()
 plt.show()
